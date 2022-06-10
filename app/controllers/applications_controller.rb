@@ -18,7 +18,10 @@ class ApplicationsController < ApplicationController
       render json: @application
     else
       # return error
-      render error: { error: 'Unable to create application' }, status: 400
+      render json: { 
+        message: 'Unable to create application' 
+        error: @application.errors.full_messages
+      }, status: 400
     end
   end
 
@@ -48,8 +51,15 @@ class ApplicationsController < ApplicationController
   private
   
   def find_application
-    @application = Application.select(:name, :token, :created_at, :updated_at)
+    @application = Application.select(:name, :token, :chats_count, :created_at, :updated_at)
       .find_by(token: params[:token])
+
+    if @application.nil?
+      render error: { 
+          message: 'Can not find the application with this specefic token'
+        }, 
+        status: 404
+    end
   end
 end
  
