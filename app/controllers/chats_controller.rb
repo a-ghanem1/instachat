@@ -8,7 +8,12 @@ class ChatsController < ApplicationController
   end
 
   def create
-    chat_number = @application.chats_count + 1
+    chat_number = $redis.get('chats' + @application.id.to_s).to_i
+
+    if chat_number.nil?
+      chat_number = @application.chats_count + 1
+      $redis.set('chats' + @application.id.to_s, chat_number)
+    end
 
     # add create new chat job to the queue
     CreateNewChatJob.perform_now(chat_number, @application)
@@ -21,6 +26,10 @@ class ChatsController < ApplicationController
     if @chat
       # delete the chat if exists
       @chat.destroy
+
+      # update chats number
+      @application.update({ chats_count: @application.chats_count - 1 })
+
       render json: { message:'Chat deleted successfully'}, status: 200
     else
       render json: { error: 'Unable to delete the chat' }, status:400

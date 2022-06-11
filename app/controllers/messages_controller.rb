@@ -16,7 +16,12 @@ class MessagesController < ApplicationController
     render json: @messages
   end
   def create
-    message_number = @chat.messages_count + 1
+    message_number = $redis.get('messages' + @chat.id.to_s).to_i
+
+    if message_number.nil?
+      message_number = @chat.messages_count + 1
+      $redis.set('messages' + @chat.id.to_s, message_number)
+    end
 
     # add create new message to the queue
     CreateNewMessageJob.perform_now(params[:body], message_number, @chat)

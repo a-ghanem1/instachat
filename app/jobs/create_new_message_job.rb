@@ -6,6 +6,7 @@ class CreateNewMessageJob < ApplicationJob
   
     if message.save
       chat.update({ messages_count: message_number })
+      $redis.incr('messages' + chat.id.to_s)
     end
   end
 end
