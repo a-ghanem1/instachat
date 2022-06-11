@@ -1,24 +1,51 @@
-# README
+# Chat app task
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+## Technologies
+- Rails 5
+- MySQL
+- Redis
+- Elasticsearch
+- Resque `for message queueing`: also I've created a worker on docker-compose file to execute jobs.
 
-Things you may want to cover:
+## How to run
+You can run this app with `docker-compose up -d`
 
-* Ruby version
+## Routes
 
-* System dependencies
+1- **Application**
+```
+GET /applications/:application_token
 
-* Configuration
+POST /applications
+{ "name": "app name" }
 
-* Database creation
+PUT /applications/:token
+{ "name": "new app name" }
 
-* Database initialization
+DELETE /applications/:token
+```
+2- **Chats**
+```
+GET /applications/:application_token/chats
 
-* How to run the test suite
+POST /applications/:application_token/chats
 
-* Services (job queues, cache servers, search engines, etc.)
+DELETE /applications/:application_token/chats/:number
+```
 
-* Deployment instructions
+3- **Messages**
+```
+GET /applications/:application_token/chats/:chat_number/messages
 
-* ...
+POST /applications/:application_token/chats/:chat_number/messages
+{ "body": "new message body" }
+
+GET /applications/:application_token/chats/:chat_number/messages/search/:term
+```
+
+## Improvements
+Things to be improved in the future.
+
+- add test cases (unit, feature).
+- refactor the code to follow all best practices.
+- add a load balancer to app servers in case we expect to have a lot of traffic.
