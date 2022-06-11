@@ -19,7 +19,7 @@ class ApplicationsController < ApplicationController
     else
       # return error
       render json: { 
-        message: 'Unable to create application' 
+        message: 'Unable to create application', 
         error: @application.errors.full_messages
       }, status: 400
     end

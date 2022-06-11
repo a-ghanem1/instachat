@@ -6,6 +6,15 @@ class MessagesController < ApplicationController
     render json: @chat.messages
   end
 
+  def search
+    if params[:term].nil?
+      @messages = []
+    else
+      @messages = Message.search(params[:term], @chat.id)
+    end
+
+    render json: @messages
+  end
   def create
     message_number = @chat.messages_count + 1
 
