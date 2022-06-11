@@ -14,8 +14,9 @@ services:
         image: 'redis:4.0-alpine'
         ports: 
             - "6379:6379"
-    app: 
+    app:
         build: .
+        entrypoint: [bin/entry]
         command: bundle exec rails s -p 3000 -b '0.0.0.0'
         volumes: 
             - ".:/app"
