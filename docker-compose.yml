@@ -63,4 +63,4 @@ services:
             - 9200:9200
             - 9300:9300
         volumes:
-            - ./docker_data/elasticsearch/data:/usr/share/elasticsearch/data
+            - /usr/share/elasticsearch/data

@@ -4,4 +4,4 @@ development: &default
 test:
   host: 'http://elasticsearch:9200'
 production:
-  host: 'http://www.yourelasticindex:9200'
+  host: 'http://elasticsearch:9200'

@@ -18,25 +18,11 @@ class MessagesController < ApplicationController
   def create
     message_number = @chat.messages_count + 1
 
-    @message = Message.new(
-      number: message_number,
-      body: params[:body],
-      chat: @chat
-    )
+    # add create new message to the queue
+    CreateNewMessageJob.perform_now(params[:body], message_number, @chat)
 
-    if @message.save
-      # update chat messages count
-      @chat.update({ messages_count: @chat.messages_count + 1 })
-
-      # return that new chat
-      render json: { number: message_number }
-    else
-      # return error
-      render json: { 
-        message: 'Unable to create new message',
-        error: @message.errors.full_messages
-      }, status: 400
-    end
+    # return that new chat
+    render json: { number: message_number }
   end
 
   private

@@ -10,25 +10,11 @@ class ChatsController < ApplicationController
   def create
     chat_number = @application.chats_count + 1
 
-    @chat = Chat.new(
-      number: chat_number,
-      application: @application
-    )
+    # add create new chat job to the queue
+    CreateNewChatJob.perform_now(chat_number, @application)
 
-    if @chat.save
-      # increase chats count
-      @application.update({ chats_count: @application.chats_count + 1 })
-      puts @application
-
-      # return that new chat
-      render json: { number: chat_number }
-    else
-      # return error
-      render json: { 
-        message: 'Unable to create new chat',
-        error: @chat.errors.full_messages 
-      }, status: 400
-    end
+    # return that new chat
+    render json: { number: chat_number }
   end
 
   def destroy
